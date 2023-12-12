@@ -26,7 +26,6 @@ def find_full_user_data_from_list_of_shorts(media_likers: list, cl):
     for media_liker in media_likers:
         user_full_data = cl.user_info_by_username(
             media_liker.username).dict()
-
         followers_count = user_full_data["followers_count"]
         if followers_count > MIN_FOLLOWERS and followers_count < MAX_FOLLOWERS:
             full_data_list.append(user_full_data)

@@ -13,9 +13,8 @@ def search_media_by_hashtag(cl) -> list:
         sys.exit()
 
     media_likers = get_limited_media_likers(medias, cl)
-    full_data_of_media_likers = find_full_user_data_from_list_of_shorts(
-        media_likers, cl)
-    return full_data_of_media_likers
+
+    return media_likers
 
     # save
     # data to google sheets

@@ -3,7 +3,7 @@ import re
 import sys
 import time
 import traceback
-
+from Models.models import HttpUrl, UserShort
 from emoji import demojize
 from hashtag import search_media_by_hashtag
 from location import search_media_by_location
@@ -26,22 +26,18 @@ def write_to_json_file(data):
         json_file.close()
 
 
-def analyze(api, cur_user, target):
+def analyze(api, cur_user: UserShort, target):
     # Lists to store user data
-    com_counter = []  # List to store comment counts
-    locations = []  # List to store locations
-    tags = []  # List to store hashtags
-    pattern = "#(\w+)"  # Regular expression pattern for extracting hashtags
-
     try:
         # Checking if the user is not in the users list, not in the blacklist, and not already analyzed
-        if str(cur_user) not in users and int(cur_user) not in blacklist and str(cur_user) not in blacklist and int(cur_user) not in users:
+        if cur_user.pk not in users and cur_user.pk not in blacklist:
             # Retrieving user information from Instagram API
-            api.getUsernameInfo(cur_user)
-
+            user_dict_from_api = cl.user_info_by_username(
+                cur_user.username).dict()
+            cur_user_info = UserInfo(user_dict_from_api)
             try:
                 # Checking if the user is a business account
-                business = jz['user']['is_business']
+                business = cur_user_info.is_business
             except:
                 business = False
 
@@ -70,31 +66,6 @@ def analyze(api, cur_user, target):
                         api.getUserFeed(cur_user)
                         jt = api.LastJson
 
-                        # Analyzing each post in the user's feed
-                        for post in jt['items']:
-                            try:
-                                com_counter.append(str(post['comment_count']))
-                            except:
-                                com_counter.append("0")
-                            try:
-                                caption = str(
-                                    demojize(post['caption']['text']))
-                                tags.extend(re.findall(pattern, caption))
-                            except:
-                                pass
-                            try:
-                                locations.append(post['location']['name'])
-                            except:
-                                pass
-                        tags = list(set(tags))
-
-                        # Handling empty location
-                        if str(location) == "":
-                            try:
-                                location = choice(locations)
-                            except:
-                                location = ""
-
                         # Checking for email and saving information to Google Sheets and CSV
                         if email:
                             scope = ['https://spreadsheets.google.com/feeds',
@@ -106,7 +77,7 @@ def analyze(api, cur_user, target):
                             row = f"{cur_user};{user};{email};{name};{category};{contact_phone_number};{site};{follower_count};{following_count};{posts_number};{target};{location};{com_counter[0]};{com_counter[1]};{com_counter[2]};{com_counter[3]};{com_counter[4]};{com_counter[5]};{com_counter[6]};{com_counter[7]};{com_counter[8]};{com_counter[9]}\n".split(
                                 ";")
                             sheet.insert_row(row, 2)
-                            users.append(cur_user["pk"])
+                            users.append(cur_user.pk)
 
                             # Appending the result to the CSV file
                             with open("result.csv", "a", encoding='utf-8') as r:
@@ -119,7 +90,7 @@ def analyze(api, cur_user, target):
                                 f"Business account saved, {total_counter} in total")
                         else:
                             # Adding the user to the blacklist if email is not available
-                            blacklist.append(cur_user)
+                            blacklist.append(cur_user.pk)
                             try:
                                 with open('log.txt', 'a', encoding='utf-8') as b:
                                     b.write(f'{cur_user}\n')
@@ -127,23 +98,23 @@ def analyze(api, cur_user, target):
                                 pass
                     else:
                         # Adding the user to the blacklist if follower count is out of range
-                        blacklist.append(cur_user)
+                        blacklist.append(cur_user.pk)
                         try:
                             with open('log.txt', 'a', encoding='utf-8') as b:
-                                b.write(f'{cur_user}\n')
+                                b.write(f'{cur_user.pk}\n')
                         except:
                             pass
 
                         # Appending user data to the 'rubbish.csv' file
                         with open("rubbish.csv", "a", encoding='utf-8') as r:
                             r.write(
-                                f"{cur_user};{user};{email};{name};{category};{contact_phone_number};{site};{follower_count};{following_count};{posts_number};{target};{location}\n")
+                                f"{cur_user.pk};{user};{email};{name};{category};{contact_phone_number};{site};{follower_count};{following_count};{posts_number};{target};{location}\n")
                 else:
                     # Adding the user to the blacklist if not a business account
-                    blacklist.append(cur_user)
+                    blacklist.append(cur_user.pk)
                     try:
                         with open('log.txt', 'a', encoding='utf-8') as b:
-                            b.write(f'{cur_user}\n')
+                            b.write(f'{cur_user.pk}\n')
                     except:
                         pass
             except:
