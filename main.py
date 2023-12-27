@@ -38,7 +38,8 @@ def analyze(cl, cur_user: UserShort):
                 if cur_user_info.follower_count > min_followers and cur_user_info.follower_count < max_followers:
                     time.sleep(0.5)
                     scope = [
-                        "https://www.googleapis.com/auth/spreadsheets"]
+                        "https://spreadsheets.google.com/feeds",
+                        "https://www.googleapis.com/auth/drive"]
                     creds = ServiceAccountCredentials.from_json_keyfile_name(
                         'client_secret.json', scope)
                     client = gspread.authorize(creds)
@@ -54,7 +55,7 @@ def analyze(cl, cur_user: UserShort):
                     # Displaying the total count of business accounts saved
                     total_counter = len(sheet.get_all_values()) - 1
                     print(
-                        f"Business account saved, {total_counter} in total")
+                        f"Account saved, {total_counter} in total")
                 else:
                     # Adding the user to the blacklist if follower count is out of range
                     blacklist.append(cur_user.pk)
@@ -116,11 +117,12 @@ if __name__ == "__main__":
             blacklist.append(int(line.strip()))
 
     try:
+        header_string = UserInfo.get_row_header_string()
         # Creating or updating the 'result.csv' file
         with open("result.csv", "x", encoding="utf-8") as t:
             t.write(
-                UserInfo.row_header_string + "\n")
-            row = UserInfo.row_header_string.split(";")
+                header_string + "\n")
+            row = header_string.split(";")
 
             # Authenticating with Google Sheets API
             scope = ['https://spreadsheets.google.com/feeds',

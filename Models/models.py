@@ -39,7 +39,6 @@ class UserInfo:
     def row_string(self) -> str:
         return f"{self.id};{self.username};{self.full_name};{self.is_private};{self.profile_pic_url};{self.is_verified};{self.media_count};{self.follower_count};{self.following_count};{self.biography};{self.external_url};{self.is_business};{config.TYPE}\n"
 
-    @property
     @staticmethod
-    def row_header_string() -> str:
+    def get_row_header_string() -> str:
         return "id;username;full_name;is_private;profile_pic_url;is_verified;media_count;follower_count;following_count;biography;external_url;is_business;TYPE"

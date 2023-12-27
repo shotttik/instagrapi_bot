@@ -1,5 +1,5 @@
 import sys
-from common import find_full_user_data_from_list_of_shorts, get_limited_media_likers
+from common import get_limited_media_likers
 from config import POSTS_SORT, TARGET
 
 

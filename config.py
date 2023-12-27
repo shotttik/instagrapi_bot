@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-LOGIN = "testuser8830"
-PASSWORD = ":%/ufehC6-4KCsX"
-SPREAD_SHEETS_ID = "1HV3t4pPJzXj-DBQIfAip4ExZt6kOvGtf1tMKldxbZ8c"
-SPREAD_SHEETS_NAME = "Crawling Instagram"
+LOGIN = "yourlogin"
+PASSWORD = "yourpassword"
+GOOGLE_DOC = "Crawling Instagram"
 POSTS_SORT = "top"  # top or recent
 TYPE = "location"  # hashtag or location
 TARGET = (41.69, 44.80)

@@ -1,12 +1,7 @@
 import sys
-import time
-import traceback
 
 from emoji import demojize
-from config import LIMIT, MIN_FOLLOWERS, MAX_FOLLOWERS, GOOGLE_DOC
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-import re
+from config import LIMIT, MIN_FOLLOWERS, MAX_FOLLOWERS
 
 
 def get_limited_media_likers(medias: list, cl):
