@@ -14,7 +14,7 @@
 
 ### Activating a virtual environment¶
 
-> .venv\Scripts\activate.bat
+> venv\Scripts\activate.bat
 
 ### Installing packages
 
